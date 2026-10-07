@@ -95,6 +95,7 @@
   <li><strong>The cost is breadth:</strong> the legacy LLM attacker confirmed 7 risk categories, and v0.6.0 confirms 4. That's where the open-source build has the most to gain.</li>
 </ul>
 <p>The first step on breadth is out. <strong>v0.7.0</strong> adds <em>false action claims</em>, the largest confirmed family sixi-scanner had never produced (58 turns in the baseline, 51 of them promptfoo's): the agent says <em>"I've emailed your account summary"</em> with no tool call behind it. Because the scanner holds the tool trace for every turn, it checks the claim against what actually ran, with no model and no false positive from a claim that turns out to be true. Replayed against recorded replies, it caught every judge-confirmed case and added no new false positives over the 1,282 replies in the v0.6.0 run. A full benchmark run of v0.7.0 hasn't been published yet.</p>
+<div class="note"><p><strong>Work in progress:</strong> sixi-scanner is in active development and more updates are on the way. Each new release is measured on this same benchmark, and the results go into <a href="https://github.com/rbrus/agent-redteam-benchmark">the benchmark repository</a> and this page, wins and losses alike. Follow <a href="https://github.com/rbrus/sixi-scanner">sixi-scanner on GitHub</a> to see them land.</p></div>
 <p>If you want it in CI: <code>uses: rbrus/scan-action@v2</code> puts findings in your GitHub Security tab, and an unreachable agent fails the job instead of passing.</p>
 
 <h2>What I'd do if I were shipping an agent tomorrow</h2>
