@@ -82,8 +82,8 @@
 </ul>
 
 <h2>And my tool</h2>
-<p>After the baseline I open-sourced <a href="https://github.com/rbrus/sixi-scanner">sixi-scanner</a>: a single Go binary with 21 techniques and no LLM inside. Measured on the same wire, with the same oracles and the same judge, v0.5.0 was <strong>1st on precision (0.452) and recall (0.750)</strong>, for $0.46 of cloud cost.</p>
-<p>Its gap is real and stated in the benchmark: <strong>breadth</strong>. It finds fewer <em>distinct</em> attacks than promptfoo or garak, and its runs were tuned against this target's ground truth while the others ran once. Read its row with that in mind.</p>
+<p>After the baseline I open-sourced <a href="https://github.com/rbrus/sixi-scanner">sixi-scanner</a>: a single Go binary with 21 techniques and no LLM inside. Measured on the same wire, with the same oracles and the same judge, v0.6.0 is <strong>1st on precision (0.688) and recall (0.833)</strong>, for $0.57 of cloud cost. A follow-up audit found recall at its ceiling on this target: it caught 34 of the 37 real leaks, and the other 3 are two judges disagreeing, not a missing marker.</p>
+<p>Its gap is real and stated in the benchmark: <strong>breadth</strong>. It finds fewer <em>distinct</em> attacks than promptfoo or garak (6 against 89 and 67), and its runs were tuned against this target's ground truth while the others ran once. Read its row with that in mind.</p>
 <p>If you want it in CI: <code>uses: rbrus/scan-action@v2</code> puts findings in your GitHub Security tab, and an unreachable agent fails the job instead of passing.</p>
 
 <h2>What I'd do if I were shipping an agent tomorrow</h2>
