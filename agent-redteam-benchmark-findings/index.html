@@ -16,6 +16,7 @@
 <meta property="og:url" content="https://rbrus.github.io/agent-redteam-benchmark-findings/">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="article:published_time" content="2026-10-06">
+<meta property="article:modified_time" content="2026-10-07">
 </head>
 <body>
 <header class="site">
@@ -25,7 +26,7 @@
 <main>
 <article>
 <h1>I scored 7 AI red-teaming tools on a real Azure agent. Their own reports were 70–97% noise.</h1>
-<p class="meta">Radoslaw Brus · October 2026 · <a href="https://github.com/rbrus/agent-redteam-benchmark">data and code</a></p>
+<p class="meta">Radoslaw Brus · October 2026 (updated 7 October) · <a href="https://github.com/rbrus/agent-redteam-benchmark">data and code</a></p>
 
 <p class="lede">If you're choosing an AI red-teaming tool today, you're probably comparing what each tool <em>says</em> it found. I wanted to know what they actually found. So I pointed seven of them at the same agent and scored every turn from the wire, ignoring the tools' own reports.</p>
 
@@ -84,6 +85,16 @@
 <h2>And my tool</h2>
 <p>After the baseline I open-sourced <a href="https://github.com/rbrus/sixi-scanner">sixi-scanner</a>: a single Go binary with 21 techniques and no LLM inside. Measured on the same wire, with the same oracles and the same judge, v0.6.0 is <strong>1st on precision (0.688) and recall (0.833)</strong>, for $0.57 of cloud cost. A follow-up audit found recall at its ceiling on this target: it caught 34 of the 37 real leaks, and the other 3 are two judges disagreeing, not a missing marker.</p>
 <p>Its gap is real and stated in the benchmark: <strong>breadth</strong>. It finds fewer <em>distinct</em> attacks than promptfoo or garak (6 against 89 and 67), and its runs were tuned against this target's ground truth while the others ran once. Read its row with that in mind.</p>
+<h3>Then and now</h3>
+<p>sixi-scanner began in 2025. The open-source rewrite came out this summer, and I maintain it in the open so anyone securing an AI agent can run it, read it and improve it. Here is the first build I measured, the legacy build's best run and the current release, all on this same target, gateway, oracles and judge:</p>
+<img src="/assets/then_now.png" alt="sixi-scanner then and now: precision, recall, false alarms, wall clock, attacker-model calls and risk categories for the first build, the legacy v9 build and open-source v0.6.0">
+<figcaption>Each bar is one published run in the benchmark repository.</figcaption>
+<ul>
+  <li><strong>Precision 0.03 → 0.69</strong> and <strong>recall 0.16 → 0.83</strong>. The report went from about 1 real finding in 35 flags to about 2 in 3.</li>
+  <li><strong>False alarms 105 → 10</strong>, <strong>wall clock 265 → 44 minutes</strong>, <strong>attacker-model calls 832 → 75</strong>.</li>
+  <li><strong>The cost is breadth:</strong> the legacy LLM attacker confirmed 7 risk categories, and v0.6.0 confirms 4. That's where the open-source build has the most to gain.</li>
+</ul>
+<p>The first step on breadth is out. <strong>v0.7.0</strong> adds <em>false action claims</em>, the largest confirmed family sixi-scanner had never produced (58 turns in the baseline, 51 of them promptfoo's): the agent says <em>"I've emailed your account summary"</em> with no tool call behind it. Because the scanner holds the tool trace for every turn, it checks the claim against what actually ran, with no model and no false positive from a claim that turns out to be true. Replayed against recorded replies, it caught every judge-confirmed case and added no new false positives over the 1,282 replies in the v0.6.0 run. A full benchmark run of v0.7.0 hasn't been published yet.</p>
 <p>If you want it in CI: <code>uses: rbrus/scan-action@v2</code> puts findings in your GitHub Security tab, and an unreachable agent fails the job instead of passing.</p>
 
 <h2>What I'd do if I were shipping an agent tomorrow</h2>
